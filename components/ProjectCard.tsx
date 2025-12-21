@@ -74,7 +74,7 @@ const ProjectCard: React.FC<Props> = ({ project, onClick }) => {
         transition: rotate.x === 0 ? 'all 0.8s cubic-bezier(0.23, 1, 0.32, 1)' : 'none',
         boxShadow: rotate.x !== 0 ? `0 40px 100px -25px ${theme.shadow}` : 'none'
       }}
-      className="group relative glass rounded-[1.2rem] md:rounded-[1.8rem] overflow-hidden flex flex-col h-full cursor-pointer transition-shadow duration-700 border-white/5 hover:border-white/10"
+      className="group relative glass rounded-2xl md:rounded-[1.8rem] overflow-hidden flex flex-col h-full cursor-pointer transition-shadow duration-700 border-white/5 hover:border-white/10"
     >
       {/* Visual Header */}
       <div className="relative h-44 md:h-56 overflow-hidden">
@@ -87,32 +87,32 @@ const ProjectCard: React.FC<Props> = ({ project, onClick }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/20 to-transparent"></div>
         
         <div className="absolute top-4 left-4">
-          <span className={`px-2 py-0.5 md:px-3 md:py-1 text-[7px] md:text-[8px] font-black uppercase tracking-widest backdrop-blur-2xl rounded-md md:rounded-lg border shadow-xl transition-all duration-500 ${theme.bg} ${theme.text} ${theme.border}`}>
+          <span className={`px-2 py-0.5 md:px-3 md:py-1 text-[7px] md:text-[8px] font-black uppercase tracking-widest backdrop-blur-2xl rounded-lg border shadow-xl transition-all duration-500 ${theme.bg} ${theme.text} ${theme.border}`}>
             {project.category}
           </span>
         </div>
       </div>
       
-      {/* Project Body - Removed negative margin on mobile to prevent overlap */}
-      <div className="p-6 md:p-8 flex flex-col flex-1 relative z-10 md:-mt-8 bg-transparent">
-        <div className="mb-4 flex flex-wrap gap-1.5">
+      {/* Project Body */}
+      <div className="p-5 md:p-8 flex flex-col flex-1 relative z-10 md:-mt-8 bg-transparent">
+        <div className="mb-3 md:mb-4 flex flex-wrap gap-1.5">
           {project.tags.slice(0, 3).map((tag) => (
-            <span key={tag} className="px-2 py-0.5 text-[6px] md:text-[7px] font-bold uppercase tracking-wider rounded bg-white/5 border border-white/5 text-gray-500 group-hover:text-white transition-all">
+            <span key={tag} className="px-2 py-0.5 text-[6px] md:text-[7px] font-bold uppercase tracking-wider rounded bg-white/5 border border-white/5 text-gray-500 group-hover:text-white transition-all whitespace-nowrap">
               {tag}
             </span>
           ))}
         </div>
         
-        <h3 className="text-base md:text-xl font-black mb-3 font-outfit text-white transition-all leading-tight tracking-tight">
+        <h3 className="text-sm md:text-xl font-black mb-2 md:mb-3 font-outfit text-white transition-all leading-tight tracking-tight break-words hyphens-auto">
           {project.title}
         </h3>
         
-        <p className="text-gray-400 text-[11px] md:text-sm mb-5 leading-relaxed flex-1 opacity-80 group-hover:opacity-100 transition-opacity line-clamp-2">
+        <p className="text-gray-400 text-[11px] md:text-sm mb-5 leading-relaxed flex-1 opacity-80 group-hover:opacity-100 transition-opacity line-clamp-2 break-words">
           {project.description}
         </p>
         
         <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
-          <span className={`text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] flex items-center gap-3 transition-all ${theme.text}`}>
+          <span className={`text-[7px] md:text-[9px] font-black uppercase tracking-[0.2em] flex items-center gap-3 transition-all ${theme.text}`}>
             VIEW CASE
             <div className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-gray-950 transition-all shadow-sm">
                <svg className="w-3 md:w-3.5 h-3 md:h-3.5 transition-transform duration-500 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
