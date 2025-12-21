@@ -91,9 +91,14 @@ const App: React.FC = () => {
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormStatus('submitting');
+    
+    // Use environment variable for the Formspree ID, fallback to the placeholder
+    const formId = process.env.FORMSPREE_ID || 'mqaeobon';
+    const formEndpoint = `https://formspree.io/f/${formId}`;
+    
     const form = e.currentTarget;
     try {
-      const response = await fetch('https://formspree.io/f/mqaeobon', { 
+      const response = await fetch(formEndpoint, { 
         method: 'POST',
         body: new FormData(form),
         headers: { 'Accept': 'application/json' }
