@@ -92,7 +92,6 @@ const App: React.FC = () => {
     e.preventDefault();
     setFormStatus('submitting');
     
-    // Use environment variable for the Formspree ID, fallback to the placeholder
     const formId = process.env.FORMSPREE_ID || 'mqaeobon';
     const formEndpoint = `https://formspree.io/f/${formId}`;
     
@@ -106,21 +105,13 @@ const App: React.FC = () => {
       if (response.ok) {
         setFormStatus('success');
         form.reset();
-        setTimeout(() => setFormStatus('idle'), 5000);
       } else {
         setFormStatus('error');
-        setTimeout(() => setFormStatus('idle'), 5000);
       }
     } catch {
       setFormStatus('error');
-      setTimeout(() => setFormStatus('idle'), 5000);
     }
   };
-
-  const skillTabs: Skill['category'][] = ['Languages', 'Frameworks', 'AI & Systems', 'DevOps'];
-  const filteredSkills = useMemo(() => {
-    return SKILLS.filter(skill => skill.category === activeSkillTab);
-  }, [activeSkillTab]);
 
   return (
     <div className="min-h-screen relative selection:bg-indigo-500/30 overflow-x-hidden">
@@ -261,49 +252,53 @@ const App: React.FC = () => {
       {/* Contact Section */}
       <section id="contact" className="py-20 md:py-32 px-4 max-w-7xl mx-auto overflow-visible relative">
         <div className="reveal relative group max-w-5xl mx-auto">
-           <div className="absolute -inset-[1px] bg-gradient-to-r from-indigo-500/10 via-cyan-500/10 to-indigo-500/10 rounded-2xl md:rounded-[2.5rem] blur-[1px]"></div>
+           {/* Outer Glow */}
+           <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 via-cyan-500/20 to-violet-500/20 rounded-[2.5rem] blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
            
-           <div className="relative glass rounded-2xl md:rounded-[2.5rem] p-6 md:p-14 lg:p-16 flex flex-col lg:flex-row gap-10 lg:gap-20 overflow-hidden border-white/5 shadow-2xl">
+           <div className="relative glass rounded-[2rem] md:rounded-[3rem] p-6 md:p-14 lg:p-16 flex flex-col lg:flex-row gap-12 lg:gap-20 overflow-hidden border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
              
-             <div className="lg:w-[42%] relative z-10 flex flex-col justify-center">
-                <div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[7px] md:text-[8px] font-bold uppercase tracking-[0.2em] text-emerald-400 mb-6 md:mb-8 shadow-sm w-fit">
-                   <span className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                      Open for Discussion
-                   </span>
+             {/* Background Decoration */}
+             <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-indigo-500/5 to-transparent pointer-events-none"></div>
+             
+             <div className="lg:w-[40%] relative z-10 flex flex-col justify-center">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[8px] font-black uppercase tracking-[0.2em] text-indigo-400 mb-8 w-fit shadow-sm">
+                   <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                   Project Board Open
                 </div>
                 
-                <h2 className="text-3xl md:text-5xl font-black font-outfit mb-8 md:mb-10 leading-tight text-white tracking-tighter">
-                   Start a <br/>
-                   <span className="text-gradient">Professional Inquiry.</span>
+                <h2 className="text-3xl md:text-5xl font-black font-outfit mb-8 leading-[1.1] text-white tracking-tighter">
+                   Let's build <br/>
+                   <span className="text-gradient">the future.</span>
                 </h2>
                 
-                <div className="space-y-6 md:space-y-8">
-                   <div onClick={handleCopyEmail} className="flex items-center gap-4 md:gap-5 group cursor-pointer w-fit p-2.5 -m-2.5 rounded-xl hover:bg-white/5 transition-all">
-                      <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-lg">
-                         <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" strokeWidth={1.2}/></svg>
+                <div className="space-y-6">
+                   <Magnetic strength={0.15}>
+                      <div onClick={handleCopyEmail} className="flex items-center gap-4 group cursor-pointer p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all shadow-xl">
+                         <div className="w-12 h-12 rounded-xl bg-indigo-600/20 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" strokeWidth={1.5}/></svg>
+                         </div>
+                         <div className="overflow-hidden">
+                            <div className="text-[7px] font-black text-gray-500 uppercase tracking-widest mb-0.5">Primary Contact {copied && <span className="text-emerald-400 ml-2 animate-pulse">(Copied)</span>}</div>
+                            <div className="text-sm md:text-base font-bold text-white font-outfit truncate">kapripankaj@proton.me</div>
+                         </div>
                       </div>
-                      <div className="overflow-hidden">
-                         <div className="text-[7px] md:text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1">Email Node {copied && <span className="text-emerald-400 ml-2 animate-pulse">(Copied)</span>}</div>
-                         <div className="text-sm md:text-lg font-bold text-white font-outfit opacity-90 truncate">kapripankaj@proton.me</div>
-                      </div>
-                   </div>
+                   </Magnetic>
 
-                   <div className="flex flex-wrap gap-3 md:gap-4 pt-6 md:pt-10 border-t border-white/5">
+                   <div className="flex gap-3 pt-6 border-t border-white/5">
                       {[
                         { name: 'LinkedIn', url: 'https://linkedin.com/in/pankajkapri', icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg> },
-                        { name: 'GitHub', url: 'https://github.com/pankrulez', icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-11386 8.199-11386 0-6627-5373-12-12-12z"/></svg> },
+                        { name: 'GitHub', url: 'https://github.com/pankrulez', icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5373-12-12-12z"/></svg> },
                         { name: 'Kaggle', url: 'https://www.kaggle.com/pankajkapri', icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.825 23.859c-.022.028-.118.141-.253.141h-2.619c-.24 0-.445-.139-.567-.303l-5.69-8.429-2.443 2.381v5.749c0 .242-.202.443-.448.443H4.448C4.202 24 4 23.799 4 23.557V.443C4 .201 4.202 0 4.448 0h2.353c.246 0 .448.201.448.443v13.395l7.085-7.366c.127-.131.307-.209.504-.209h2.905c.199 0 .351.155.351.341 0 .044-.012.087-.036.129l-7.896 8.116 8.238 12.199c.125.17.114.391-.03.56c-.012.015-.024.03-.04.047z"/></svg> }
                       ].map((s) => (
-                        <Magnetic strength={0.2} key={s.name}>
+                        <Magnetic strength={0.3} key={s.name}>
                           <a 
                             href={s.url} 
                             target="_blank" 
                             rel="noopener noreferrer" 
-                            className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center transition-all hover:bg-white/10 hover:border-white/20 hover:text-white shadow-md"
+                            className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center transition-all hover:bg-indigo-600 hover:text-white hover:border-indigo-500 shadow-lg"
                             aria-label={s.name}
                           >
-                            <span className="relative z-10 transition-transform group-hover:scale-110">{s.icon}</span>
+                            {s.icon}
                           </a>
                         </Magnetic>
                       ))}
@@ -311,48 +306,71 @@ const App: React.FC = () => {
                 </div>
              </div>
 
-             <div className="lg:w-[58%] relative z-10">
-                <form onSubmit={handleFormSubmit} className="space-y-4 md:space-y-6 bg-gray-950/40 p-5 md:p-10 rounded-2xl md:rounded-[2rem] border border-white/10 shadow-xl backdrop-blur-2xl">
-                   <div className="space-y-4 md:space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                         <div className="space-y-2 group/field">
-                           <label className="text-[7px] md:text-[8px] font-bold uppercase tracking-widest text-gray-500 ml-3">Identity</label>
-                           <input required name="name" type="text" placeholder="Full Name" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 md:py-4 focus:border-indigo-500/50 outline-none text-white transition-all text-xs md:text-sm font-medium placeholder:text-gray-700" />
-                         </div>
-                         <div className="space-y-2 group/field">
-                           <label className="text-[7px] md:text-[8px] font-bold uppercase tracking-widest text-gray-500 ml-3">Endpoint</label>
-                           <input required name="email" type="email" placeholder="example@email.com" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 md:py-4 focus:border-indigo-500/50 outline-none text-white transition-all text-xs md:text-sm font-medium placeholder:text-gray-700" />
-                         </div>
-                      </div>
-                      <div className="space-y-2 group/field">
-                         <label className="text-[7px] md:text-[8px] font-bold uppercase tracking-widest text-gray-500 ml-3">Engagement Specifics</label>
-                         <textarea required name="message" placeholder="Project goals or message..." rows={4} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 md:py-4 focus:border-indigo-500/50 outline-none text-white resize-none transition-all text-xs md:text-sm font-medium placeholder:text-gray-700"></textarea>
-                      </div>
-                   </div>
-                   
-                   <div className="pt-2">
-                      <button 
-                        type="submit" 
-                        disabled={formStatus === 'submitting'} 
-                        className={`w-full py-4 md:py-5 rounded-xl font-bold text-[10px] md:text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-4 active:scale-[0.98] relative overflow-hidden shadow-xl ${
-                          formStatus === 'success' ? 'bg-emerald-600' : 
-                          formStatus === 'error' ? 'bg-rose-600' : 'bg-indigo-600 hover:bg-indigo-700'
-                        }`}
-                      >
-                        {formStatus === 'submitting' ? (
-                          <div className="w-4 h-4 md:w-5 md:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        ) : formStatus === 'success' ? (
-                          <>
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                            <span>Transmission Success</span>
-                          </>
-                        ) : (
-                          <span>Dispatch Request</span>
-                        )}
-                        <div className="shimmer-overlay opacity-5"></div>
-                      </button>
-                   </div>
-                </form>
+             <div className="lg:w-[60%] relative z-10 min-h-[400px]">
+                {formStatus === 'success' ? (
+                  <div className="h-full w-full flex flex-col items-center justify-center text-center p-8 bg-emerald-500/5 rounded-[2rem] border border-emerald-500/20 animate-in zoom-in duration-500">
+                    <div className="w-20 h-20 rounded-full bg-emerald-500 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.4)]">
+                      <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                    </div>
+                    <h3 className="text-2xl font-black font-outfit text-white mb-3">Transmission Complete</h3>
+                    <p className="text-gray-400 text-sm max-w-xs">Your message has been successfully routed. I'll get back to you within 24 standard business hours.</p>
+                    <button onClick={() => setFormStatus('idle')} className="mt-8 text-xs font-black uppercase tracking-widest text-emerald-400 hover:text-white transition-colors">Send another message</button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleFormSubmit} className={`space-y-5 transition-opacity duration-300 ${formStatus === 'submitting' ? 'opacity-50 pointer-events-none' : ''}`}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                       <div className="space-y-1.5">
+                          <label className="text-[7px] font-black uppercase tracking-[0.2em] text-gray-500 ml-4">Identity</label>
+                          <div className="relative group/input">
+                            <input required name="name" type="text" placeholder="Full Name" className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus:border-indigo-500/50 focus:bg-white/[0.08] outline-none text-white transition-all text-sm font-medium placeholder:text-gray-700" />
+                            <div className="absolute bottom-0 left-5 right-5 h-[1px] bg-indigo-500 scale-x-0 group-focus-within/input:scale-x-100 transition-transform duration-500"></div>
+                          </div>
+                       </div>
+                       <div className="space-y-1.5">
+                          <label className="text-[7px] font-black uppercase tracking-[0.2em] text-gray-500 ml-4">Endpoint</label>
+                          <div className="relative group/input">
+                            <input required name="email" type="email" placeholder="example@email.com" className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus:border-indigo-500/50 focus:bg-white/[0.08] outline-none text-white transition-all text-sm font-medium placeholder:text-gray-700" />
+                            <div className="absolute bottom-0 left-5 right-5 h-[1px] bg-indigo-500 scale-x-0 group-focus-within/input:scale-x-100 transition-transform duration-500"></div>
+                          </div>
+                       </div>
+                    </div>
+                    
+                    <div className="space-y-1.5">
+                       <label className="text-[7px] font-black uppercase tracking-[0.2em] text-gray-500 ml-4">Engagement Specifics</label>
+                       <div className="relative group/input">
+                         <textarea required name="message" placeholder="Describe your project or inquiry..." rows={5} className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus:border-indigo-500/50 focus:bg-white/[0.08] outline-none text-white resize-none transition-all text-sm font-medium placeholder:text-gray-700"></textarea>
+                         <div className="absolute bottom-0 left-5 right-5 h-[1px] bg-indigo-500 scale-x-0 group-focus-within/input:scale-x-100 transition-transform duration-500"></div>
+                       </div>
+                    </div>
+                    
+                    <div className="pt-4">
+                       <button 
+                         type="submit" 
+                         disabled={formStatus === 'submitting'} 
+                         className={`w-full py-5 rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-all duration-500 flex items-center justify-center gap-4 group/btn relative overflow-hidden shadow-2xl ${
+                           formStatus === 'error' ? 'bg-rose-600' : 'bg-indigo-600 hover:bg-white hover:text-gray-950 shadow-indigo-500/20'
+                         }`}
+                       >
+                         <span className="relative z-10 flex items-center gap-3">
+                           {formStatus === 'submitting' ? (
+                             <>
+                               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                               <span>Syncing...</span>
+                             </>
+                           ) : formStatus === 'error' ? (
+                             <span>Retry Submission</span>
+                           ) : (
+                             <>
+                               <span>Initialize Contact</span>
+                               <svg className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M17 8l4 4m0 0l-4 4m4-4H3" strokeWidth={2.5}/></svg>
+                             </>
+                           )}
+                         </span>
+                         <div className="shimmer-overlay opacity-20"></div>
+                       </button>
+                    </div>
+                  </form>
+                )}
              </div>
            </div>
         </div>
