@@ -1,0 +1,26 @@
+
+{
+  "short_name": "Pankaj Portfolio",
+  "name": "Pankaj Kapri | Software Engineer & Data Scientist",
+  "icons": [
+    {
+      "src": "https://api.iconify.design/solar:code-circle-bold-duotone.svg?color=%236366f1",
+      "sizes": "64x64",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "https://api.iconify.design/solar:code-circle-bold-duotone.svg?color=%236366f1",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "https://api.iconify.design/solar:code-circle-bold-duotone.svg?color=%236366f1",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#020617",
+  "background_color": "#020617"
+}
