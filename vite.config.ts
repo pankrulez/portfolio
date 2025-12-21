@@ -5,8 +5,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   define: {
-    // This ensures process.env.API_KEY is replaced with the actual key during the Vercel build
-    'process.env.API_KEY': JSON.stringify(process.env.API_KEY)
+    // Replaces process.env.API_KEY with the actual value at build time.
+    // Falls back to empty string to prevent build crashes if key is missing locally.
+    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || '')
   },
   build: {
     outDir: 'dist',
@@ -15,5 +16,8 @@ export default defineConfig({
         main: './index.html'
       }
     }
+  },
+  server: {
+    port: 3000
   }
 });
