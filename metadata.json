@@ -1,0 +1,8 @@
+{
+  "name": "Pankaj Kapri - Full Stack & Data Enthusiast",
+  "description": "High-end portfolio for Pankaj Kapri, featuring 5+ years of diverse tech experience and AI-driven interaction.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
