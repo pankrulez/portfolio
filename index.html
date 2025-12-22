@@ -23,13 +23,6 @@
     <meta property="og:description" content="Explore the portfolio of Pankaj Kapri, featuring AI-driven projects and high-performance software systems.">
     <meta property="og:image" content="https://images.unsplash.com/photo-1620712943543-bcc4628c6bb5?auto=format&fit=crop&q=80&w=1200">
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://pankajkapri.com/">
-    <meta property="twitter:title" content="Pankaj Kapri | Software Engineer & Data Scientist">
-    <meta property="twitter:description" content="Explore the portfolio of Pankaj Kapri, featuring AI-driven projects and high-performance software systems.">
-    <meta property="twitter:image" content="https://images.unsplash.com/photo-1620712943543-bcc4628c6bb5?auto=format&fit=crop&q=80&w=1200">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,14 +39,24 @@
             color: #f9fafb;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
         .font-outfit { font-family: 'Outfit', sans-serif; }
+        
+        /* Glass optimization for mobile */
         .glass { 
             background: rgba(255, 255, 255, 0.015); 
-            backdrop-filter: blur(24px); 
-            -webkit-backdrop-filter: blur(24px);
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.06); 
         }
+        @media (min-width: 768px) {
+            .glass { 
+                backdrop-filter: blur(24px); 
+                -webkit-backdrop-filter: blur(24px);
+            }
+        }
+
         .text-gradient { 
             background: linear-gradient(to right, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-4)); 
             -webkit-background-clip: text; 
@@ -66,69 +69,61 @@
             100% { background-position: 300% center; }
         }
         
+        /* Optimized Blobs: Large blurs are expensive, using smaller sizes and less blur on mobile */
         .blob {
             position: absolute;
-            width: 70vw;
-            height: 70vw;
-            max-width: 1000px;
-            max-height: 1000px;
+            width: 50vw;
+            height: 50vw;
             background: radial-gradient(circle, var(--accent-1) 0%, transparent 70%);
-            filter: blur(140px);
+            filter: blur(80px);
             opacity: 0.1;
             border-radius: 50%;
             z-index: -1;
-            animation: moveBlob1 30s infinite alternate ease-in-out;
             pointer-events: none;
+            will-change: transform;
+            animation: moveBlob1 40s infinite alternate ease-in-out;
         }
+        @media (min-width: 768px) {
+            .blob { width: 70vw; height: 70vw; filter: blur(140px); }
+        }
+
         .blob-2 {
             background: radial-gradient(circle, var(--accent-4) 0%, transparent 70%);
-            animation: moveBlob2 35s infinite alternate ease-in-out;
+            animation: moveBlob2 45s infinite alternate ease-in-out;
             opacity: 0.08;
         }
         .blob-3 {
             background: radial-gradient(circle, var(--accent-2) 0%, transparent 70%);
-            animation: moveBlob3 25s infinite alternate ease-in-out;
+            animation: moveBlob3 35s infinite alternate ease-in-out;
             opacity: 0.06;
         }
 
         @keyframes moveBlob1 {
             0% { transform: translate(-10%, -10%) rotate(0deg); }
-            100% { transform: translate(20%, 30%) rotate(90deg); }
+            100% { transform: translate(15%, 20%) rotate(45deg); }
         }
         @keyframes moveBlob2 {
-            0% { transform: translate(30%, 10%) rotate(0deg); }
-            100% { transform: translate(-20%, -30%) rotate(-90deg); }
+            0% { transform: translate(20%, 5%) rotate(0deg); }
+            100% { transform: translate(-15%, -20%) rotate(-45deg); }
         }
         @keyframes moveBlob3 {
-            0% { transform: translate(0%, 40%) scale(1); }
-            100% { transform: translate(40%, 0%) scale(1.2); }
+            0% { transform: translate(0%, 30%) scale(1); }
+            100% { transform: translate(30%, 0%) scale(1.1); }
         }
 
-        @keyframes gradient-xy {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        .reveal { 
+            opacity: 0; 
+            transform: translateY(20px); 
+            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
         }
-        .animate-gradient-xy {
-            background-size: 400% 400%;
-            animation: gradient-xy 15s ease infinite;
-        }
-
-        @keyframes voice-bar {
-            0%, 100% { height: 10px; opacity: 0.3; }
-            50% { height: 40px; opacity: 1; }
-        }
-        .animate-voice-bar {
-            animation: voice-bar 1s ease-in-out infinite;
-        }
-
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         .shimmer-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-            animation: shimmer 3s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            animation: shimmer 4s infinite;
             pointer-events: none;
         }
         @keyframes shimmer {
@@ -136,10 +131,9 @@
             100% { transform: translateX(100%); }
         }
 
-        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-3); }
     </style>
 <script type="importmap">
 {
@@ -156,7 +150,8 @@
 </script>
 </head>
 <body>
-    <div id="spotlight" class="fixed inset-0 pointer-events-none z-[1] transition-opacity duration-1000 opacity-30"></div>
+    <!-- Spotlight disabled on mobile -->
+    <div id="spotlight" class="fixed inset-0 pointer-events-none z-[1] transition-opacity duration-1000 opacity-20 hidden md:block"></div>
     
     <div class="blob top-0 left-0"></div>
     <div class="blob blob-2 bottom-0 right-0"></div>
@@ -168,19 +163,35 @@
     <script type="module" src="index.tsx"></script>
 
     <script>
-        const spotlight = document.getElementById('spotlight');
-        document.addEventListener('mousemove', (e) => {
-            if(spotlight) spotlight.style.background = `radial-gradient(800px circle at ${e.clientX}px ${e.clientY}px, rgba(99, 102, 241, 0.08), transparent 80%)`;
-        });
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         
+        if (!isMobile) {
+            const spotlight = document.getElementById('spotlight');
+            document.addEventListener('mousemove', (e) => {
+                if(spotlight) spotlight.style.background = `radial-gradient(800px circle at ${e.clientX}px ${e.clientY}px, rgba(99, 102, 241, 0.08), transparent 80%)`;
+            });
+        }
+        
+        // Improved Reveal Observer
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+            entries.forEach(e => { 
+                if(e.isIntersecting) {
+                    e.target.classList.add('active'); 
+                    observer.unobserve(e.target); // Unobserve once revealed for performance
+                }
+            });
         }, { threshold: 0.1 });
         
-        const watchForReveal = () => {
-          document.querySelectorAll('.reveal:not(.active)').forEach(el => observer.observe(el));
+        const initReveals = () => {
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         };
-        setInterval(watchForReveal, 1000);
+        
+        // Run once on load
+        window.addEventListener('load', initReveals);
+        
+        // Re-run when DOM changes (e.g. navigation or project expansion)
+        const mutationObserver = new MutationObserver(() => initReveals());
+        mutationObserver.observe(document.body, { childList: true, subtree: true });
     </script>
 </body>
 </html>
