@@ -57,7 +57,7 @@
         section {
             content-visibility: auto;
             contain-intrinsic-size: 1px 500px;
-            transform: translateZ(0); /* Force GPU */
+            transform: translateZ(0);
         }
 
         .glass { 
@@ -72,7 +72,6 @@
                 -webkit-backdrop-filter: none !important; 
                 background: rgba(15, 23, 42, 0.98); 
             }
-            .blob { display: none; }
         }
 
         @media (min-width: 768px) {
@@ -97,45 +96,17 @@
             0% { background-position: 0% center; }
             100% { background-position: 200% center; }
         }
-        
-        .blob {
-            position: absolute;
-            width: 50vw;
-            height: 50vw;
-            background: radial-gradient(circle, var(--accent-1) 0%, transparent 70%);
-            filter: blur(80px);
-            opacity: 0.02;
-            border-radius: 50%;
-            z-index: -1;
-            pointer-events: none;
-            will-change: transform;
-        }
 
         .reveal { 
             opacity: 0; 
             transform: translateY(15px); 
-            transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: opacity, transform;
             backface-visibility: hidden;
         }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         .stagger-grid > div { transition-delay: calc(var(--idx, 0) * 0.1s); }
-
-        .shimmer-overlay {
-            background: linear-gradient(
-                90deg,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.05) 50%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            background-size: 200% 100%;
-            animation: shimmer 2s infinite linear;
-        }
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
 
         .scan-line {
             position: absolute;
@@ -157,21 +128,12 @@
             100% { top: 100%; }
         }
 
-        @keyframes float {
-          0% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-15px) rotate(0.5deg); }
-          100% { transform: translateY(0px) rotate(0deg); }
-        }
-        .animate-float {
-          animation: float 8s ease-in-out infinite;
-        }
-
         @keyframes infiniteScroll {
             from { transform: translateX(0); }
             to { transform: translateX(-50%); }
         }
         .animate-infinite-scroll {
-            animation: infiniteScroll 60s linear infinite; /* Slowed down for mobile performance */
+            animation: infiniteScroll 60s linear infinite;
             will-change: transform;
         }
 
@@ -179,35 +141,8 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .pulse-btn::after {
-          content: '';
-          position: absolute;
-          inset: -4px;
-          border-radius: inherit;
-          background: var(--accent-3);
-          opacity: 0.4;
-          z-index: -1;
-          animation: btnPulse 2s infinite;
-        }
-        @keyframes btnPulse {
-          0% { transform: scale(1); opacity: 0.4; }
-          100% { transform: scale(1.4); opacity: 0; }
-        }
-        
-        .image-blur-up {
-          filter: blur(10px);
-          transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .image-blur-up.loaded {
-          filter: blur(0);
-        }
-
-        /* Improved heading scaling for extreme small sizes */
         .fluid-heading {
-            font-size: clamp(0.75rem, 4vw, 3rem);
+            font-size: clamp(0.75rem, 4.5vw, 3.2rem);
         }
     </style>
 <script type="importmap">
@@ -234,12 +169,7 @@
             document.documentElement.style.setProperty('--vh', `${vh}px`);
         };
         
-        // Debounced resize for orientation shifts
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(setVh, 250);
-        });
+        window.addEventListener('resize', setVh);
         setVh();
 
         const observer = new IntersectionObserver((entries) => {
@@ -249,10 +179,7 @@
                     observer.unobserve(e.target);
                 }
             });
-        }, { 
-            threshold: 0.1,
-            rootMargin: '0px 0px -20px 0px' 
-        });
+        }, { threshold: 0.1 });
         
         const initReveals = () => {
             document.querySelectorAll('.reveal:not(.active)').forEach(el => observer.observe(el));
@@ -260,23 +187,14 @@
         
         window.addEventListener('DOMContentLoaded', initReveals);
         
-        const mutationObserver = new MutationObserver((mutations) => {
-            let shouldInit = false;
-            for(const mutation of mutations) {
-                if(mutation.addedNodes.length > 0) {
-                    shouldInit = true;
-                    break;
-                }
-            }
-            if(shouldInit) initReveals();
-        });
+        const mutationObserver = new MutationObserver(() => initReveals());
         mutationObserver.observe(document.getElementById('root'), { childList: true, subtree: true });
 
         if (window.innerWidth >= 1024 && !('ontouchstart' in window)) {
             const spotlight = document.getElementById('spotlight');
             document.addEventListener('mousemove', (e) => {
                 requestAnimationFrame(() => {
-                    if(spotlight) spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(99, 102, 241, 0.15), transparent 80%)`;
+                    if(spotlight) spotlight.style.background = `radial-gradient(800px circle at ${e.clientX}px ${e.clientY}px, rgba(99, 102, 241, 0.12), transparent 80%)`;
                 });
             }, { passive: true });
         }

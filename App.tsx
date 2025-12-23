@@ -189,11 +189,9 @@ const App: React.FC = () => {
       <Background />
       <Navbar scrolled={scrolled} />
       
-      {/* Redesigned Detailed Hero Section - Improved Mobile Padding/Spacing */}
       <header className="relative pt-24 sm:pt-32 md:pt-44 pb-16 md:pb-32 px-4 md:px-8 min-h-[500px] flex items-center">
         <div className="max-w-7xl mx-auto flex flex-col items-center text-center w-full">
           
-          {/* Status Badge */}
           <div className="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 mb-6 md:mb-8 shadow-2xl backdrop-blur-md">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -202,7 +200,6 @@ const App: React.FC = () => {
             System Online
           </div>
           
-          {/* Fluid Heading Hierarchy - Single Line & Compact - Capital Case */}
           <div className="reveal flex flex-col items-center gap-2 md:gap-3 mb-6 md:mb-10 w-full px-2">
             <h1 className="fluid-heading font-black font-outfit tracking-widest leading-none text-white whitespace-nowrap overflow-visible">
               Architecting <span className="text-gradient">Intelligent Systems</span>
@@ -212,7 +209,6 @@ const App: React.FC = () => {
             </h2>
           </div>
           
-          {/* Expanded Detailed Bio - Balanced Padding */}
           <div className="reveal max-w-3xl flex flex-col items-center">
             <p className="text-[11px] sm:text-sm md:text-base text-gray-400 mb-8 md:mb-10 leading-relaxed px-4 sm:px-6 opacity-90 font-medium">
               Hi, I'm <span className="text-white font-black">Pankaj Kapri</span>. 
@@ -222,14 +218,13 @@ const App: React.FC = () => {
               Focused on software that evolves.
             </p>
 
-            {/* Performance Metrics Nodes - Specialized Content */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-12 mb-12 w-full max-w-2xl px-4 sm:px-0">
                {[
                  { label: 'Engineering DNA', val: '5+', sub: 'Years Systems Dev' },
                  { label: 'AI Synthesis', val: '10+', sub: 'Deployed GenAI' },
                  { label: 'Architecture', val: '360°', sub: 'Stack Specialist' }
                ].map((stat, i) => (
-                 <div key={i} className="flex flex-col items-center p-4 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-sm group hover:border-indigo-500/30 transition-all">
+                 <div key={i} className="flex flex-col items-center p-4 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-sm group hover:border-indigo-500/30 transition-all hover:bg-white/[0.04] active:scale-95">
                     <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-1 group-hover:text-indigo-400 transition-colors">{stat.label}</span>
                     <span className="text-xl md:text-3xl font-black text-white font-outfit leading-none">{stat.val}</span>
                     <span className="text-[8px] md:text-[10px] font-bold text-gray-600 uppercase tracking-widest mt-1">{stat.sub}</span>
@@ -238,7 +233,6 @@ const App: React.FC = () => {
             </div>
           </div>
           
-          {/* Action Area - Stacked on Mobile */}
           <div className="reveal flex flex-col sm:flex-row gap-3 items-center w-full sm:w-auto px-6 sm:px-0">
             <Magnetic strength={0.2} className="w-full sm:w-auto">
               <button 
@@ -260,7 +254,6 @@ const App: React.FC = () => {
             </Magnetic>
           </div>
 
-          {/* Core Stack Ticker - Reduced Animation Load for Mobile */}
           <div className="reveal mt-12 md:mt-24 w-full overflow-hidden opacity-30 group">
              <div className="flex whitespace-nowrap gap-8 md:gap-16 animate-infinite-scroll">
                 {[...SKILLS.slice(0, 10), ...SKILLS.slice(0, 10)].map((skill, i) => (
@@ -273,7 +266,6 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Projects Section */}
       <section id="projects" className="py-12 md:py-28 px-4 md:px-8 relative w-full max-w-full">
         <div className="max-w-7xl mx-auto">
           <div className="reveal mb-10 md:mb-14 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
@@ -313,7 +305,6 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* Experience Section */}
       <section id="experience" className="py-20 md:py-40 px-4 md:px-6 relative overflow-hidden">
         <div className="max-w-6xl mx-auto relative">
           <div className="reveal text-center mb-16 md:mb-32">
@@ -384,7 +375,6 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* Tech Stack Section */}
       <section id="stack" className="py-12 md:py-32 px-4 md:px-8 max-w-7xl mx-auto relative">
         <div className="reveal text-center mb-12">
           <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-4 font-bold uppercase tracking-[0.3em] text-[7px] md:text-[8px] text-indigo-400">Capabilities</div>
@@ -420,7 +410,6 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
       <section id="contact" className="py-12 md:py-32 px-4 md:px-8 max-w-7xl mx-auto relative overflow-hidden">
         <div className="reveal relative max-w-5xl mx-auto">
            <div className="relative glass rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 lg:p-16 flex flex-col lg:flex-row gap-10 lg:gap-20 overflow-hidden border-white/5 shadow-2xl">
@@ -467,9 +456,8 @@ const App: React.FC = () => {
                       <svg className="w-7 h-7 md:w-8 md:h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
                     </div>
                     <h3 className="text-xl md:text-2xl font-black font-outfit text-white mb-2">Success</h3>
-                    <p className="text-gray-400 text-[10px] md:text-xs max-w-xs leading-relaxed opacity-80">Message routed. I'll get back to you shortly.</p>
-                    <p className="text-gray-400 text-[10px] md:text-xs max-w-xs leading-relaxed opacity-80">Message routed. I'll get back to you shortly.</p>
-                    <button onClick={() => setFormStatus('idle')} className="mt-8 text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400">Start New</button>
+                    <p className="text-gray-400 text-[10px] md:text-xs max-w-xs leading-relaxed opacity-80 uppercase tracking-widest font-bold">Message routed. I'll get back to you shortly.</p>
+                    <button onClick={() => setFormStatus('idle')} className="mt-8 text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400 hover:text-white transition-colors">Start New</button>
                   </div>
                 ) : (
                   <form onSubmit={handleFormSubmit} className={`space-y-4 transition-opacity duration-300 w-full ${formStatus === 'submitting' ? 'opacity-40 pointer-events-none' : ''}`}>

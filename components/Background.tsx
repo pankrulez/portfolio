@@ -18,10 +18,10 @@ const Background: React.FC = () => {
     let particles: Particle[] = [];
     let lastTime = 0;
     
-    // Stricter FPS for mobile to save battery and reduce lag
-    const fps = isMobileRef.current ? 12 : 30; 
+    const fps = isMobileRef.current ? 15 : 45; 
     const fpsInterval = 1000 / fps;
-    const scaleFactor = isMobileRef.current ? 0.3 : 1;
+    const scaleFactor = isMobileRef.current ? 0.4 : 1;
+    const connectionDistance = isMobileRef.current ? 50 : 120;
 
     class Particle {
       x: number;
@@ -34,10 +34,10 @@ const Background: React.FC = () => {
       constructor(width: number, height: number) {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.size = (Math.random() * (isMobileRef.current ? 0.2 : 0.8) + 0.1) * scaleFactor;
-        this.speedX = (Math.random() * 0.05 - 0.025) * scaleFactor;
-        this.speedY = (Math.random() * 0.05 - 0.025) * scaleFactor;
-        const colors = ['rgba(16, 185, 129, 0.05)', 'rgba(6, 182, 212, 0.05)', 'rgba(99, 102, 241, 0.05)'];
+        this.size = (Math.random() * (isMobileRef.current ? 0.3 : 1.2) + 0.2) * scaleFactor;
+        this.speedX = (Math.random() * 0.4 - 0.2) * scaleFactor;
+        this.speedY = (Math.random() * 0.4 - 0.2) * scaleFactor;
+        const colors = ['rgba(16, 185, 129, 0.15)', 'rgba(6, 182, 212, 0.15)', 'rgba(99, 102, 241, 0.15)'];
         this.color = colors[Math.floor(Math.random() * colors.length)];
       }
 
@@ -62,9 +62,29 @@ const Background: React.FC = () => {
       canvas.width = w;
       canvas.height = h;
       particles = [];
-      const particleCount = isMobileRef.current ? 8 : 40;
+      const particleCount = isMobileRef.current ? 20 : 70;
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle(w, h));
+      }
+    };
+
+    const drawConnections = () => {
+      ctx.lineWidth = 0.5 * scaleFactor;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < connectionDistance) {
+            const opacity = (1 - dist / connectionDistance) * 0.1;
+            ctx.strokeStyle = `rgba(99, 102, 241, ${opacity})`;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
       }
     };
 
@@ -74,9 +94,10 @@ const Background: React.FC = () => {
       if (elapsed < fpsInterval) return;
       lastTime = time - (elapsed % fpsInterval);
 
-      // Clear with background color instead of clearRect for performance
       ctx.fillStyle = '#020617';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      drawConnections();
       
       const len = particles.length;
       for (let i = 0; i < len; i++) {
@@ -88,16 +109,8 @@ const Background: React.FC = () => {
     init();
     animationFrameId = requestAnimationFrame(animate);
 
-    let resizeTimer: any;
     const handleResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        const wasMobile = isMobileRef.current;
-        isMobileRef.current = window.innerWidth < 768;
-        if (wasMobile !== isMobileRef.current || Math.abs(canvas.width - window.innerWidth * scaleFactor) > 50) {
-            init();
-        }
-      }, 300);
+      init();
     };
 
     window.addEventListener('resize', handleResize, { passive: true });
@@ -119,7 +132,7 @@ const Background: React.FC = () => {
           imageRendering: 'auto'
         }} 
       />
-      <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.01] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+      <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
     </>
   );
 };
