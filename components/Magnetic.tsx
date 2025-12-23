@@ -1,5 +1,5 @@
 
-import React, { useRef, useState, ReactNode } from 'react';
+import React, { useRef, useState, ReactNode, useEffect } from 'react';
 
 interface Props {
   children: ReactNode;
@@ -10,9 +10,14 @@ interface Props {
 const Magnetic: React.FC<Props> = ({ children, strength = 0.5, className = "" }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isTouch, setIsTouch] = useState(false);
+
+  useEffect(() => {
+    setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
+    if (isTouch || !ref.current) return;
     const { clientX, clientY } = e;
     const { left, top, width, height } = ref.current.getBoundingClientRect();
     const centerX = left + width / 2;
@@ -33,7 +38,7 @@ const Magnetic: React.FC<Props> = ({ children, strength = 0.5, className = "" })
       onMouseLeave={handleMouseLeave}
       className={`inline-block transition-transform duration-300 ease-out ${className}`}
       style={{
-        transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
+        transform: !isTouch ? `translate3d(${position.x}px, ${position.y}px, 0)` : 'none',
       }}
     >
       {children}

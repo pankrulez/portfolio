@@ -1,9 +1,9 @@
 
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Pankaj Kapri | Software Engineer & Data Scientist</title>
     
     <!-- SEO Meta Tags -->
@@ -16,120 +16,90 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#020617">
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://pankajkapri.com/">
-    <meta property="og:title" content="Pankaj Kapri | Software Engineer & Data Scientist">
-    <meta property="og:description" content="Explore the portfolio of Pankaj Kapri, featuring AI-driven projects and high-performance software systems.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1620712943543-bcc4628c6bb5?auto=format&fit=crop&q=80&w=1200">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Outfit:wght@800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --accent-1: #10b981; /* Emerald */
-            --accent-2: #06b6d4; /* Cyan */
-            --accent-3: #6366f1; /* Indigo */
-            --accent-4: #8b5cf6; /* Violet */
+            --accent-1: #10b981;
+            --accent-2: #06b6d4;
+            --accent-3: #6366f1;
+            --accent-4: #8b5cf6;
         }
-        body {
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
             background-color: #020617;
             color: #f9fafb;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            position: relative;
             -webkit-font-smoothing: antialiased;
+            min-height: -webkit-fill-available;
         }
+
         .font-outfit { font-family: 'Outfit', sans-serif; }
         
-        /* Glass optimization for mobile */
         .glass { 
-            background: rgba(255, 255, 255, 0.015); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.06); 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.08); 
         }
+
+        /* Further performance optimization for mobile: turn off heavy filters */
+        @media (max-width: 767px) {
+            .glass { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.95); }
+        }
+
         @media (min-width: 768px) {
-            .glass { 
-                backdrop-filter: blur(24px); 
-                -webkit-backdrop-filter: blur(24px);
-            }
+            .glass { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
         }
 
         .text-gradient { 
             background: linear-gradient(to right, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-4)); 
             -webkit-background-clip: text; 
             -webkit-fill-color: transparent; 
-            background-size: 300% auto;
-            animation: textShine 6s linear infinite;
+            background-size: 200% auto;
+            animation: textShine 4s linear infinite;
         }
+
         @keyframes textShine {
             0% { background-position: 0% center; }
-            100% { background-position: 300% center; }
+            100% { background-position: 200% center; }
         }
         
-        /* Optimized Blobs: Large blurs are expensive, using smaller sizes and less blur on mobile */
         .blob {
             position: absolute;
-            width: 50vw;
-            height: 50vw;
+            width: 80vw;
+            height: 80vw;
             background: radial-gradient(circle, var(--accent-1) 0%, transparent 70%);
-            filter: blur(80px);
-            opacity: 0.1;
+            filter: blur(40px);
+            opacity: 0.03;
             border-radius: 50%;
             z-index: -1;
             pointer-events: none;
             will-change: transform;
-            animation: moveBlob1 40s infinite alternate ease-in-out;
         }
-        @media (min-width: 768px) {
-            .blob { width: 70vw; height: 70vw; filter: blur(140px); }
-        }
-
-        .blob-2 {
-            background: radial-gradient(circle, var(--accent-4) 0%, transparent 70%);
-            animation: moveBlob2 45s infinite alternate ease-in-out;
-            opacity: 0.08;
-        }
-        .blob-3 {
-            background: radial-gradient(circle, var(--accent-2) 0%, transparent 70%);
-            animation: moveBlob3 35s infinite alternate ease-in-out;
-            opacity: 0.06;
-        }
-
-        @keyframes moveBlob1 {
-            0% { transform: translate(-10%, -10%) rotate(0deg); }
-            100% { transform: translate(15%, 20%) rotate(45deg); }
-        }
-        @keyframes moveBlob2 {
-            0% { transform: translate(20%, 5%) rotate(0deg); }
-            100% { transform: translate(-15%, -20%) rotate(-45deg); }
-        }
-        @keyframes moveBlob3 {
-            0% { transform: translate(0%, 30%) scale(1); }
-            100% { transform: translate(30%, 0%) scale(1.1); }
+        
+        /* Landscape specific fixes for mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            header { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+            h1 { font-size: 2.5rem !important; }
         }
 
         .reveal { 
             opacity: 0; 
-            transform: translateY(20px); 
-            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(15px); 
+            transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: opacity, transform;
         }
         .reveal.active { opacity: 1; transform: translateY(0); }
-
-        .shimmer-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
-            animation: shimmer 4s infinite;
-            pointer-events: none;
-        }
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
 
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -150,48 +120,38 @@
 </script>
 </head>
 <body>
-    <!-- Spotlight disabled on mobile -->
     <div id="spotlight" class="fixed inset-0 pointer-events-none z-[1] transition-opacity duration-1000 opacity-20 hidden md:block"></div>
-    
-    <div class="blob top-0 left-0"></div>
-    <div class="blob blob-2 bottom-0 right-0"></div>
-    <div class="blob blob-3 top-[40%] left-[50%]"></div>
-
     <div id="root"></div>
-
-    <!-- Entry Point -->
     <script type="module" src="index.tsx"></script>
-
     <script>
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        
-        if (!isMobile) {
-            const spotlight = document.getElementById('spotlight');
-            document.addEventListener('mousemove', (e) => {
-                if(spotlight) spotlight.style.background = `radial-gradient(800px circle at ${e.clientX}px ${e.clientY}px, rgba(99, 102, 241, 0.08), transparent 80%)`;
-            });
-        }
-        
-        // Improved Reveal Observer
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(e => { 
                 if(e.isIntersecting) {
                     e.target.classList.add('active'); 
-                    observer.unobserve(e.target); // Unobserve once revealed for performance
+                    observer.unobserve(e.target);
                 }
             });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.05 });
         
         const initReveals = () => {
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         };
         
-        // Run once on load
         window.addEventListener('load', initReveals);
-        
-        // Re-run when DOM changes (e.g. navigation or project expansion)
         const mutationObserver = new MutationObserver(() => initReveals());
         mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+        if (!('ontouchstart' in window)) {
+            const spotlight = document.getElementById('spotlight');
+            document.addEventListener('mousemove', (e) => {
+                if(spotlight) spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(99, 102, 241, 0.1), transparent 80%)`;
+            });
+        }
+        
+        // Handle Orientation Change Lag
+        window.addEventListener('orientationchange', () => {
+            window.scrollTo(0, window.scrollY); // Force layout recalculation
+        });
     </script>
 </body>
 </html>
