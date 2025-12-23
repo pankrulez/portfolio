@@ -26,6 +26,7 @@
             --accent-2: #06b6d4;
             --accent-3: #6366f1;
             --accent-4: #8b5cf6;
+            --vh: 1vh;
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -44,7 +45,8 @@
             padding: 0;
             position: relative;
             -webkit-font-smoothing: antialiased;
-            min-height: -webkit-fill-available;
+            min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
             text-rendering: optimizeLegibility;
         }
 
@@ -123,8 +125,14 @@
 
         /* Shimmer Effect for Loading State */
         .shimmer-overlay {
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.05) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
             background-size: 200% 100%;
-            animation: shimmer 1.5s infinite linear;
+            animation: shimmer 2s infinite linear;
         }
         @keyframes shimmer {
             0% { background-position: -200% 0; }
@@ -152,9 +160,36 @@
             100% { top: 100%; }
         }
 
+        @keyframes float {
+          0% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-15px) rotate(0.5deg); }
+          100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .animate-float {
+          animation: float 8s ease-in-out infinite;
+        }
+
+        .scan-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to bottom, transparent 50%, rgba(99, 102, 241, 0.05) 50%);
+          background-size: 100% 4px;
+          pointer-events: none;
+          z-index: 5;
+        }
+
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        /* Custom Scrollbar Utility */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
         .pulse-btn::after {
           content: '';
@@ -169,6 +204,20 @@
         @keyframes btnPulse {
           0% { transform: scale(1); opacity: 0.4; }
           100% { transform: scale(1.4); opacity: 0; }
+        }
+        
+        /* Blur-up transition */
+        .image-blur-up {
+          filter: blur(10px);
+          transition: filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .image-blur-up.loaded {
+          filter: blur(0);
+        }
+
+        /* Prevent overscroll bounce on Safari */
+        body {
+            overscroll-behavior-y: none;
         }
     </style>
 <script type="importmap">
@@ -190,6 +239,15 @@
     <div id="root"></div>
     <script type="module" src="index.tsx"></script>
     <script>
+        // Custom VH for mobile mobile address bar scaling
+        const setVh = () => {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        };
+        window.addEventListener('resize', setVh);
+        window.addEventListener('orientationchange', setVh);
+        setVh();
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(e => { 
                 if(e.isIntersecting) {

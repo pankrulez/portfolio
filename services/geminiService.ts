@@ -2,8 +2,6 @@
 import { GoogleGenAI, Modality, Type, FunctionDeclaration, LiveServerMessage } from "@google/genai";
 import { BIO_PROMPT } from "../constants";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 // Audio Utilities
 export function encode(bytes: Uint8Array) {
   let binary = '';
@@ -77,6 +75,8 @@ const controlUIFunctionDeclaration: FunctionDeclaration = {
 
 export const chatWithAI = async (message: string, history: { role: 'user' | 'assistant', text: string }[]) => {
   try {
+    // Fix: create a new instance before making an API call for consistency
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const contents = history.map(h => ({
       role: h.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: h.text }]
@@ -88,7 +88,8 @@ export const chatWithAI = async (message: string, history: { role: 'user' | 'ass
       contents: contents,
       config: {
         systemInstruction: BIO_PROMPT + "\nYou have the ability to control the UI. Use controlUI tool for site navigation.",
-        tools: [{ googleSearch: {} }, { functionDeclarations: [controlUIFunctionDeclaration] }]
+        // Fix: According to guidelines, Only googleSearch is permitted when used. It cannot be combined with other tools like function declarations.
+        tools: [{ functionDeclarations: [controlUIFunctionDeclaration] }]
       },
     });
 
@@ -103,7 +104,23 @@ export const chatWithAI = async (message: string, history: { role: 'user' | 'ass
   }
 };
 
+export const summarizeText = async (text: string) => {
+  try {
+    // Fix: create a new instance inside function
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: [{ parts: [{ text: `Provide a very concise, professional one-sentence summary of this project: ${text}` }] }],
+    });
+    return response.text;
+  } catch (error) {
+    console.error("Summarization Error:", error);
+    return null;
+  }
+};
+
 export const connectLiveAI = (callbacks: any) => {
+  // Fix: create a new instance for Live connection
   const liveAI = new GoogleGenAI({ apiKey: process.env.API_KEY });
   return liveAI.live.connect({
     model: 'gemini-2.5-flash-native-audio-preview-09-2025',
@@ -121,6 +138,8 @@ export const connectLiveAI = (callbacks: any) => {
 
 export const speakText = async (text: string) => {
   try {
+    // Fix: create a new instance for text-to-speech task
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-preview-tts",
       contents: [{ parts: [{ text: `Say naturally: ${text}` }] }],

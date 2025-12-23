@@ -39,6 +39,7 @@ const AIAssistant: React.FC = () => {
   }, [messages, isOpen]);
 
   const handleFunctionCall = (fc: any) => {
+    if (!fc || !fc.args) return;
     const { action, target } = fc.args;
     switch (action) {
       case 'scroll_to':
@@ -66,7 +67,9 @@ const AIAssistant: React.FC = () => {
     liveSessionRef.current = null;
     inputAudioCtxRef.current?.close();
     outputAudioCtxRef.current?.close();
-    sourcesRef.current.forEach(s => s.stop());
+    sourcesRef.current.forEach(s => {
+      try { s.stop(); } catch (e) {}
+    });
     sourcesRef.current.clear();
   };
 
@@ -93,7 +96,9 @@ const AIAssistant: React.FC = () => {
           processor.connect(inputCtx.destination);
         },
         onmessage: async (msg: any) => {
-          if (msg.toolCall) msg.toolCall.functionCalls.forEach(handleFunctionCall);
+          if (msg.toolCall && msg.toolCall.functionCalls) {
+             msg.toolCall.functionCalls.forEach(handleFunctionCall);
+          }
           const audioBase64 = msg.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
           if (audioBase64 && outputAudioCtxRef.current) {
             const ctx = outputAudioCtxRef.current;

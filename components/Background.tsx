@@ -11,7 +11,6 @@ const Background: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Use alpha: false for better opaque rendering performance
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
@@ -19,12 +18,9 @@ const Background: React.FC = () => {
     let particles: Particle[] = [];
     let lastTime = 0;
     
-    // Low FPS for mobile saves battery and CPU
-    const fps = isMobileRef.current ? 18 : 60; 
+    const fps = isMobileRef.current ? 15 : 60; 
     const fpsInterval = 1000 / fps;
-    
-    // Downscaling the canvas on mobile significantly improves fill-rate performance
-    const scaleFactor = isMobileRef.current ? 0.5 : 1;
+    const scaleFactor = isMobileRef.current ? 0.4 : 1;
 
     class Particle {
       x: number;
@@ -37,10 +33,10 @@ const Background: React.FC = () => {
       constructor(width: number, height: number) {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.size = (Math.random() * (isMobileRef.current ? 0.4 : 1.2) + 0.1) * scaleFactor;
-        this.speedX = (Math.random() * 0.1 - 0.05) * scaleFactor;
-        this.speedY = (Math.random() * 0.1 - 0.05) * scaleFactor;
-        const colors = ['rgba(16, 185, 129, 0.08)', 'rgba(6, 182, 212, 0.08)', 'rgba(99, 102, 241, 0.08)'];
+        this.size = (Math.random() * (isMobileRef.current ? 0.3 : 1.0) + 0.1) * scaleFactor;
+        this.speedX = (Math.random() * 0.08 - 0.04) * scaleFactor;
+        this.speedY = (Math.random() * 0.08 - 0.04) * scaleFactor;
+        const colors = ['rgba(16, 185, 129, 0.06)', 'rgba(6, 182, 212, 0.06)', 'rgba(99, 102, 241, 0.06)'];
         this.color = colors[Math.floor(Math.random() * colors.length)];
       }
 
@@ -65,7 +61,7 @@ const Background: React.FC = () => {
       canvas.width = w;
       canvas.height = h;
       particles = [];
-      const particleCount = isMobileRef.current ? 20 : 100;
+      const particleCount = isMobileRef.current ? 12 : 80;
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle(w, h));
       }
@@ -94,8 +90,9 @@ const Background: React.FC = () => {
     const handleResize = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
+        isMobileRef.current = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 1024;
         init();
-      }, 300);
+      }, 500);
     };
 
     window.addEventListener('resize', handleResize, { passive: true });
@@ -115,7 +112,8 @@ const Background: React.FC = () => {
         className="fixed inset-0 pointer-events-none z-0" 
         style={{ 
           width: '100vw', 
-          height: '100vh', 
+          // Fix: removed duplicate height property that caused TypeScript error
+          height: 'calc(var(--vh, 1vh) * 100)',
           imageRendering: isMobileRef.current ? 'auto' : 'pixelated' 
         }} 
       />
