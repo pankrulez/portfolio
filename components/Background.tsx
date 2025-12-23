@@ -6,19 +6,25 @@ const Background: React.FC = () => {
   const isMobileRef = useRef(false);
 
   useEffect(() => {
-    isMobileRef.current = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
+    isMobileRef.current = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 1024;
     
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // Use alpha: false for better opaque rendering performance
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
     let animationFrameId: number;
     let particles: Particle[] = [];
     let lastTime = 0;
-    const fps = isMobileRef.current ? 24 : 60; 
+    
+    // Low FPS for mobile saves battery and CPU
+    const fps = isMobileRef.current ? 18 : 60; 
     const fpsInterval = 1000 / fps;
+    
+    // Downscaling the canvas on mobile significantly improves fill-rate performance
+    const scaleFactor = isMobileRef.current ? 0.5 : 1;
 
     class Particle {
       x: number;
@@ -31,10 +37,10 @@ const Background: React.FC = () => {
       constructor(width: number, height: number) {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.size = Math.random() * (isMobileRef.current ? 0.6 : 1.2) + 0.2;
-        this.speedX = Math.random() * 0.15 - 0.075;
-        this.speedY = Math.random() * 0.15 - 0.075;
-        const colors = ['rgba(16, 185, 129, 0.1)', 'rgba(6, 182, 212, 0.1)', 'rgba(99, 102, 241, 0.1)'];
+        this.size = (Math.random() * (isMobileRef.current ? 0.4 : 1.2) + 0.1) * scaleFactor;
+        this.speedX = (Math.random() * 0.1 - 0.05) * scaleFactor;
+        this.speedY = (Math.random() * 0.1 - 0.05) * scaleFactor;
+        const colors = ['rgba(16, 185, 129, 0.08)', 'rgba(6, 182, 212, 0.08)', 'rgba(99, 102, 241, 0.08)'];
         this.color = colors[Math.floor(Math.random() * colors.length)];
       }
 
@@ -54,12 +60,12 @@ const Background: React.FC = () => {
     }
 
     const init = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
+      const w = Math.floor(window.innerWidth * scaleFactor);
+      const h = Math.floor(window.innerHeight * scaleFactor);
       canvas.width = w;
       canvas.height = h;
       particles = [];
-      const particleCount = isMobileRef.current ? 30 : 120;
+      const particleCount = isMobileRef.current ? 20 : 100;
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle(w, h));
       }
@@ -74,7 +80,8 @@ const Background: React.FC = () => {
       ctx.fillStyle = '#020617';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      for (let i = 0; i < particles.length; i++) {
+      const len = particles.length;
+      for (let i = 0; i < len; i++) {
         particles[i].update(canvas.width, canvas.height);
         particles[i].draw(ctx);
       }
@@ -87,12 +94,8 @@ const Background: React.FC = () => {
     const handleResize = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        canvas.width = w;
-        canvas.height = h;
         init();
-      }, 250);
+      }, 300);
     };
 
     window.addEventListener('resize', handleResize, { passive: true });
@@ -107,8 +110,16 @@ const Background: React.FC = () => {
 
   return (
     <>
-      <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" style={{ transform: 'translateZ(0)' }} />
-      <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.02] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+      <canvas 
+        ref={canvasRef} 
+        className="fixed inset-0 pointer-events-none z-0" 
+        style={{ 
+          width: '100vw', 
+          height: '100vh', 
+          imageRendering: isMobileRef.current ? 'auto' : 'pixelated' 
+        }} 
+      />
+      <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.01] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
     </>
   );
 };

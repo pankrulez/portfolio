@@ -11,6 +11,7 @@ const ProjectCard: React.FC<Props> = ({ project, onClick }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   
   useEffect(() => {
     setIsMobile('ontouchstart' in window || navigator.maxTouchPoints > 0 || window.innerWidth < 768);
@@ -35,10 +36,10 @@ const ProjectCard: React.FC<Props> = ({ project, onClick }) => {
 
   const getThemeColors = () => {
     switch (project.category) {
-      case 'Data Science': return { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20' };
-      case 'Web': return { bg: 'bg-cyan-500/10', text: 'text-cyan-400', border: 'border-cyan-500/20' };
-      case 'Mobile': return { bg: 'bg-violet-500/10', text: 'text-violet-400', border: 'border-violet-500/20' };
-      default: return { bg: 'bg-indigo-500/10', text: 'text-indigo-400', border: 'border-indigo-500/20' };
+      case 'Data Science': return { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20', tagBorder: 'border-emerald-500/30' };
+      case 'Web': return { bg: 'bg-cyan-500/10', text: 'text-cyan-400', border: 'border-cyan-500/20', tagBorder: 'border-cyan-500/30' };
+      case 'Mobile': return { bg: 'bg-violet-500/10', text: 'text-violet-400', border: 'border-violet-500/20', tagBorder: 'border-violet-500/30' };
+      default: return { bg: 'bg-indigo-500/10', text: 'text-indigo-400', border: 'border-indigo-500/20', tagBorder: 'border-indigo-500/30' };
     }
   };
 
@@ -56,14 +57,25 @@ const ProjectCard: React.FC<Props> = ({ project, onClick }) => {
       }}
       className="group relative glass rounded-[2rem] overflow-hidden flex flex-col h-full cursor-pointer border-white/5 hover:border-white/10 hover:bg-white/[0.04] transition-all duration-500"
     >
-      <div className="relative h-48 md:h-60 overflow-hidden">
+      <div className="scan-line"></div>
+      
+      <div className="relative h-48 md:h-60 overflow-hidden bg-white/5">
+        {/* Shimmer Skeleton */}
+        {!isLoaded && (
+          <div className="absolute inset-0 z-10">
+            <div className="w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent shimmer-overlay"></div>
+          </div>
+        )}
+        
         <img 
           src={project.image} 
           alt={project.title} 
-          className="w-full h-full object-cover transition-all duration-[2s] group-hover:scale-105"
+          onLoad={() => setIsLoaded(true)}
+          className={`w-full h-full object-cover transition-all duration-[2s] group-hover:scale-110 group-hover:rotate-1 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent"></div>
+
+        <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/20 to-transparent"></div>
         <div className="absolute top-5 left-5">
           <span className={`px-3 py-1 text-[8px] font-black uppercase tracking-widest backdrop-blur-xl rounded-lg border ${theme.bg} ${theme.text} ${theme.border}`}>
             {project.category}
@@ -71,10 +83,10 @@ const ProjectCard: React.FC<Props> = ({ project, onClick }) => {
         </div>
       </div>
       
-      <div className="p-6 md:p-8 flex flex-col flex-1">
+      <div className="p-6 md:p-8 flex flex-col flex-1 relative">
         <div className="mb-4 flex flex-wrap gap-2">
           {project.tags.slice(0, 3).map((tag) => (
-            <span key={tag} className="px-2 py-0.5 text-[7px] font-bold uppercase tracking-widest rounded bg-white/5 border border-white/5 text-gray-500 group-hover:text-gray-300 transition-all">
+            <span key={tag} className={`px-2 py-0.5 text-[7px] font-bold uppercase tracking-widest rounded ${theme.bg} border ${theme.tagBorder} ${theme.text} group-hover:brightness-125 transition-all`}>
               {tag}
             </span>
           ))}

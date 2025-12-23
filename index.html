@@ -30,6 +30,10 @@
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+        html {
+            scrollbar-gutter: stable;
+        }
+
         html, body {
             background-color: #020617;
             color: #f9fafb;
@@ -41,24 +45,35 @@
             position: relative;
             -webkit-font-smoothing: antialiased;
             min-height: -webkit-fill-available;
+            text-rendering: optimizeLegibility;
         }
 
         .font-outfit { font-family: 'Outfit', sans-serif; }
         
+        section {
+            content-visibility: auto;
+            contain-intrinsic-size: 1px 500px;
+        }
+
         .glass { 
             background: rgba(255, 255, 255, 0.02); 
-            backdrop-filter: blur(8px); 
-            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.08); 
         }
 
-        /* Further performance optimization for mobile: turn off heavy filters */
         @media (max-width: 767px) {
-            .glass { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(15, 23, 42, 0.95); }
+            .glass { 
+                backdrop-filter: none !important; 
+                -webkit-backdrop-filter: none !important; 
+                background: rgba(15, 23, 42, 0.98); 
+            }
+            .blob { display: none; }
         }
 
         @media (min-width: 768px) {
-            .glass { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+            .glass { 
+                backdrop-filter: blur(20px); 
+                -webkit-backdrop-filter: blur(20px); 
+            }
         }
 
         .text-gradient { 
@@ -66,7 +81,10 @@
             -webkit-background-clip: text; 
             -webkit-fill-color: transparent; 
             background-size: 200% auto;
-            animation: textShine 4s linear infinite;
+        }
+        
+        @media (min-width: 1024px) {
+            .text-gradient { animation: textShine 4s linear infinite; }
         }
 
         @keyframes textShine {
@@ -76,34 +94,82 @@
         
         .blob {
             position: absolute;
-            width: 80vw;
-            height: 80vw;
+            width: 50vw;
+            height: 50vw;
             background: radial-gradient(circle, var(--accent-1) 0%, transparent 70%);
-            filter: blur(40px);
-            opacity: 0.03;
+            filter: blur(80px);
+            opacity: 0.02;
             border-radius: 50%;
             z-index: -1;
             pointer-events: none;
             will-change: transform;
         }
-        
-        /* Landscape specific fixes for mobile */
-        @media (max-height: 500px) and (orientation: landscape) {
-            header { padding-top: 4rem !important; padding-bottom: 4rem !important; }
-            h1 { font-size: 2.5rem !important; }
-        }
 
         .reveal { 
             opacity: 0; 
-            transform: translateY(15px); 
-            transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(20px); 
+            transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: opacity, transform;
         }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
+        /* Staggered Reveal Logic */
+        .stagger-grid > div:nth-child(1) { transition-delay: 0.1s; }
+        .stagger-grid > div:nth-child(2) { transition-delay: 0.2s; }
+        .stagger-grid > div:nth-child(3) { transition-delay: 0.3s; }
+        .stagger-grid > div:nth-child(4) { transition-delay: 0.4s; }
+        .stagger-grid > div:nth-child(5) { transition-delay: 0.5s; }
+        .stagger-grid > div:nth-child(6) { transition-delay: 0.6s; }
+
+        /* Shimmer Effect for Loading State */
+        .shimmer-overlay {
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Card Scanning Effect */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--accent-2), transparent);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .group:hover .scan-line {
+            animation: scan 1.5s linear infinite;
+            opacity: 0.6;
+        }
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .pulse-btn::after {
+          content: '';
+          position: absolute;
+          inset: -4px;
+          border-radius: inherit;
+          background: var(--accent-3);
+          opacity: 0.3;
+          z-index: -1;
+          animation: btnPulse 2s infinite;
+        }
+        @keyframes btnPulse {
+          0% { transform: scale(1); opacity: 0.4; }
+          100% { transform: scale(1.4); opacity: 0; }
+        }
     </style>
 <script type="importmap">
 {
@@ -120,7 +186,7 @@
 </script>
 </head>
 <body>
-    <div id="spotlight" class="fixed inset-0 pointer-events-none z-[1] transition-opacity duration-1000 opacity-20 hidden md:block"></div>
+    <div id="spotlight" class="fixed inset-0 pointer-events-none z-[1] transition-opacity duration-1000 opacity-20 hidden lg:block"></div>
     <div id="root"></div>
     <script type="module" src="index.tsx"></script>
     <script>
@@ -131,27 +197,37 @@
                     observer.unobserve(e.target);
                 }
             });
-        }, { threshold: 0.05 });
+        }, { 
+            threshold: 0.05,
+            rootMargin: '0px 0px -50px 0px' 
+        });
         
         const initReveals = () => {
-            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+            document.querySelectorAll('.reveal:not(.active)').forEach(el => observer.observe(el));
         };
         
-        window.addEventListener('load', initReveals);
-        const mutationObserver = new MutationObserver(() => initReveals());
-        mutationObserver.observe(document.body, { childList: true, subtree: true });
+        window.addEventListener('DOMContentLoaded', initReveals);
+        
+        const mutationObserver = new MutationObserver((mutations) => {
+            let shouldInit = false;
+            for(const mutation of mutations) {
+                if(mutation.addedNodes.length > 0) {
+                    shouldInit = true;
+                    break;
+                }
+            }
+            if(shouldInit) initReveals();
+        });
+        mutationObserver.observe(document.getElementById('root'), { childList: true, subtree: true });
 
-        if (!('ontouchstart' in window)) {
+        if (window.innerWidth >= 1024 && !('ontouchstart' in window)) {
             const spotlight = document.getElementById('spotlight');
             document.addEventListener('mousemove', (e) => {
-                if(spotlight) spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(99, 102, 241, 0.1), transparent 80%)`;
-            });
+                requestAnimationFrame(() => {
+                    if(spotlight) spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(99, 102, 241, 0.15), transparent 80%)`;
+                });
+            }, { passive: true });
         }
-        
-        // Handle Orientation Change Lag
-        window.addEventListener('orientationchange', () => {
-            window.scrollTo(0, window.scrollY); // Force layout recalculation
-        });
     </script>
 </body>
 </html>

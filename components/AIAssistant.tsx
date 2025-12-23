@@ -51,7 +51,11 @@ const AIAssistant: React.FC = () => {
         window.open("https://drive.google.com/uc?export=download&id=1FyOlK9FpdVwd79QaYyWZbNOEG8EDhjai", "_blank");
         break;
       case 'open_social':
-        const links: any = { linkedin: "https://linkedin.com/in/pankajkapri", github: "https://github.com/pankrulez" };
+        const links: any = { 
+          linkedin: "https://linkedin.com/in/pankajkapri", 
+          github: "https://github.com/pankrulez",
+          kaggle: "https://kaggle.com/pankajkapri"
+        };
         if (links[target?.toLowerCase()]) window.open(links[target.toLowerCase()], "_blank");
         break;
     }
