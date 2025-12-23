@@ -6,7 +6,7 @@ const Background: React.FC = () => {
   const isMobileRef = useRef(false);
 
   useEffect(() => {
-    isMobileRef.current = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 1024;
+    isMobileRef.current = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
     
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -18,9 +18,10 @@ const Background: React.FC = () => {
     let particles: Particle[] = [];
     let lastTime = 0;
     
-    const fps = isMobileRef.current ? 15 : 60; 
+    // Stricter FPS for mobile to save battery and reduce lag
+    const fps = isMobileRef.current ? 12 : 30; 
     const fpsInterval = 1000 / fps;
-    const scaleFactor = isMobileRef.current ? 0.4 : 1;
+    const scaleFactor = isMobileRef.current ? 0.3 : 1;
 
     class Particle {
       x: number;
@@ -33,10 +34,10 @@ const Background: React.FC = () => {
       constructor(width: number, height: number) {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.size = (Math.random() * (isMobileRef.current ? 0.3 : 1.0) + 0.1) * scaleFactor;
-        this.speedX = (Math.random() * 0.08 - 0.04) * scaleFactor;
-        this.speedY = (Math.random() * 0.08 - 0.04) * scaleFactor;
-        const colors = ['rgba(16, 185, 129, 0.06)', 'rgba(6, 182, 212, 0.06)', 'rgba(99, 102, 241, 0.06)'];
+        this.size = (Math.random() * (isMobileRef.current ? 0.2 : 0.8) + 0.1) * scaleFactor;
+        this.speedX = (Math.random() * 0.05 - 0.025) * scaleFactor;
+        this.speedY = (Math.random() * 0.05 - 0.025) * scaleFactor;
+        const colors = ['rgba(16, 185, 129, 0.05)', 'rgba(6, 182, 212, 0.05)', 'rgba(99, 102, 241, 0.05)'];
         this.color = colors[Math.floor(Math.random() * colors.length)];
       }
 
@@ -61,7 +62,7 @@ const Background: React.FC = () => {
       canvas.width = w;
       canvas.height = h;
       particles = [];
-      const particleCount = isMobileRef.current ? 12 : 80;
+      const particleCount = isMobileRef.current ? 8 : 40;
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle(w, h));
       }
@@ -73,6 +74,7 @@ const Background: React.FC = () => {
       if (elapsed < fpsInterval) return;
       lastTime = time - (elapsed % fpsInterval);
 
+      // Clear with background color instead of clearRect for performance
       ctx.fillStyle = '#020617';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
@@ -90,17 +92,18 @@ const Background: React.FC = () => {
     const handleResize = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
-        isMobileRef.current = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 1024;
-        init();
-      }, 500);
+        const wasMobile = isMobileRef.current;
+        isMobileRef.current = window.innerWidth < 768;
+        if (wasMobile !== isMobileRef.current || Math.abs(canvas.width - window.innerWidth * scaleFactor) > 50) {
+            init();
+        }
+      }, 300);
     };
 
     window.addEventListener('resize', handleResize, { passive: true });
-    window.addEventListener('orientationchange', handleResize);
     
     return () => {
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('orientationchange', handleResize);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
@@ -112,9 +115,8 @@ const Background: React.FC = () => {
         className="fixed inset-0 pointer-events-none z-0" 
         style={{ 
           width: '100vw', 
-          // Fix: removed duplicate height property that caused TypeScript error
           height: 'calc(var(--vh, 1vh) * 100)',
-          imageRendering: isMobileRef.current ? 'auto' : 'pixelated' 
+          imageRendering: 'auto'
         }} 
       />
       <div className="fixed inset-0 pointer-events-none z-[1] opacity-[0.01] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>

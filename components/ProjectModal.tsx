@@ -71,9 +71,21 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
       
       <div className={`relative w-full h-full sm:h-auto sm:max-h-[90vh] md:max-w-6xl bg-[#0a0f1d] glass border-0 md:border md:border-white/10 rounded-none sm:rounded-3xl overflow-hidden flex flex-col md:flex-row ${isAnimatingOut ? 'translate-y-full opacity-0 scale-95' : 'translate-y-0 opacity-100 scale-100'} transition-all duration-400 ease-out`}>
         
+        {/* Unified Close Button for Desktop (Fixed in Modal) */}
         <button 
           onClick={() => handleClose()}
-          className="absolute top-4 right-4 z-[60] w-10 h-10 rounded-full bg-black/60 flex items-center justify-center text-white md:hidden"
+          className="hidden md:flex absolute top-8 right-8 z-[70] w-12 h-12 rounded-full bg-white/5 border border-white/10 items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all active:scale-90"
+          aria-label="Close modal"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        {/* Mobile Close Button */}
+        <button 
+          onClick={() => handleClose()}
+          className="absolute top-4 right-4 z-[70] w-10 h-10 rounded-full bg-black/60 flex items-center justify-center text-white md:hidden"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
@@ -104,13 +116,9 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
         </div>
 
         <div className="flex-1 p-6 md:p-14 overflow-y-auto custom-scrollbar flex flex-col bg-white/[0.01]">
-          <button onClick={() => handleClose()} className="hidden md:block absolute top-10 right-10 text-gray-500 hover:text-white transition-all">
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-
           <div className="space-y-8 md:space-y-12 max-w-2xl pb-8">
             <section>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4 md:pr-14">
                 <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-indigo-500">Core Thesis</h4>
                 <div className="flex gap-2 flex-wrap">
                   {activeProject.longDescription && (
