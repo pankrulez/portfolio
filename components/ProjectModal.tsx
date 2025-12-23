@@ -43,7 +43,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
     if (!activeProject.longDescription || isSummarizing) return;
     setIsSummarizing(true);
     const result = await summarizeText(activeProject.longDescription);
-    setSummary(result);
+    setSummary(result ?? null);
     setIsSummarizing(false);
   };
 
