@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import Navbar from './components/Navbar';
 import Background from './components/Background';
 import ProjectCard from './components/ProjectCard';
@@ -388,6 +389,7 @@ const App: React.FC = () => {
       <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
       <ExperienceModal experience={selectedExperience} onClose={() => setSelectedExperience(null)} />
       <AIAssistant />
+      <SpeedInsights />
     </div>
   );
 };
