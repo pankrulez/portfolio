@@ -125,7 +125,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
                     <button 
                       onClick={handleSummarize}
                       disabled={isSummarizing}
-                      className="text-[8px] md:text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-600 hover:text-white transition-all disabled:opacity-50"
+                      className="text-[8px] md:text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-600 hover:text-white transition-all disabled:opacity-50 btn-vibrant-glow"
                     >
                       {isSummarizing ? 'Summarizing...' : 'Summarize AI'}
                     </button>
@@ -208,12 +208,12 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
 
             <div className="pt-4 flex flex-col sm:flex-row gap-3">
               {hasValidLink && (
-                <a href={activeProject.link} target="_blank" className="flex-1 text-center py-4 rounded-xl bg-indigo-600 text-white font-black text-[9px] uppercase tracking-[0.3em] hover:bg-white hover:text-gray-950 transition-all shadow-xl">
+                <a href={activeProject.link} target="_blank" className="flex-1 text-center py-4 rounded-xl bg-indigo-600 text-white font-black text-[9px] uppercase tracking-[0.3em] hover:bg-white hover:text-gray-950 transition-all shadow-xl btn-vibrant-glow">
                   Launch Deployment
                 </a>
               )}
               {hasValidGithub && (
-                <a href={activeProject.github} target="_blank" className="flex-1 text-center py-4 rounded-xl bg-white/5 border border-white/10 text-white font-black text-[9px] uppercase tracking-[0.3em] hover:bg-white/10 transition-all">
+                <a href={activeProject.github} target="_blank" className="flex-1 text-center py-4 rounded-xl bg-white/5 border border-white/10 text-white font-black text-[9px] uppercase tracking-[0.3em] hover:bg-white/10 transition-all btn-vibrant-glow">
                   Repository Audit
                 </a>
               )}

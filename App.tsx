@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Background from './components/Background';
 import ProjectCard from './components/ProjectCard';
@@ -22,6 +22,8 @@ const App: React.FC = () => {
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [copied, setCopied] = useState(false);
+  const [stackVisible, setStackVisible] = useState(false);
+  const stackRef = useRef<HTMLElement>(null);
 
   // Deep link handling on mount and popstate
   useEffect(() => {
@@ -117,6 +119,21 @@ const App: React.FC = () => {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Observer for Stack section progress bars
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setStackVisible(true);
+      }
+    }, { threshold: 0.2 });
+
+    if (stackRef.current) {
+      observer.observe(stackRef.current);
+    }
+
+    return () => observer.disconnect();
   }, []);
 
   const handleCopyEmail = useCallback(() => {
@@ -237,7 +254,7 @@ const App: React.FC = () => {
             <Magnetic strength={0.2} className="w-full sm:w-auto">
               <button 
                 onClick={handlePortfolioClick} 
-                className="group relative px-8 md:px-10 py-3.5 md:py-4 rounded-full bg-indigo-600 text-white text-[9px] md:text-xs font-black uppercase tracking-[0.3em] transition-all hover:bg-white hover:text-gray-950 w-full sm:w-auto shadow-xl shadow-indigo-600/20"
+                className="group relative px-8 md:px-10 py-3.5 md:py-4 rounded-full bg-indigo-600 text-white text-[9px] md:text-xs font-black uppercase tracking-[0.3em] transition-all hover:bg-white hover:text-gray-950 w-full sm:w-auto btn-vibrant-glow"
               >
                 <span className="relative z-10">Explore Work</span>
                 <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 rounded-full"></div>
@@ -247,7 +264,7 @@ const App: React.FC = () => {
               <a 
                 href={CV_LINK} 
                 target="_blank" 
-                className="block text-center px-8 md:px-10 py-3.5 md:py-4 rounded-full bg-white/5 border border-white/10 text-white text-[9px] md:text-xs font-black uppercase tracking-[0.3em] transition-all hover:bg-white/10 w-full sm:w-auto backdrop-blur-md"
+                className="block text-center px-8 md:px-10 py-3.5 md:py-4 rounded-full bg-white/5 border border-white/10 text-white text-[9px] md:text-xs font-black uppercase tracking-[0.3em] transition-all hover:bg-white hover:text-gray-950 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] w-full sm:w-auto backdrop-blur-md btn-vibrant-glow"
               >
                 Download CV
               </a>
@@ -280,7 +297,7 @@ const App: React.FC = () => {
                   <button 
                     key={f} 
                     onClick={() => setActiveFilter(f as any)} 
-                    className={`flex-1 md:flex-none px-4 py-2.5 rounded-lg text-[8px] md:text-[9px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${activeFilter === f ? 'bg-indigo-600 text-white shadow-xl' : 'text-gray-500 hover:text-white'}`}
+                    className={`flex-1 md:flex-none px-4 py-2.5 rounded-lg text-[8px] md:text-[9px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${activeFilter === f ? 'bg-indigo-600 text-white glow-indigo' : 'text-gray-500 hover:text-white'}`}
                   >
                     {f}
                   </button>
@@ -299,7 +316,7 @@ const App: React.FC = () => {
           
           {hasMore && (
              <div className="mt-12 flex justify-center">
-                <button onClick={showAll} className="w-full sm:w-auto px-8 py-3 rounded-xl glass border-white/10 text-white font-bold uppercase tracking-widest text-[8px] md:text-[9px] hover:bg-white/10 transition-all active:scale-95 shadow-xl">Show All Projects</button>
+                <button onClick={showAll} className="w-full sm:w-auto px-8 py-3 rounded-xl glass border-white/10 text-white font-bold uppercase tracking-widest text-[8px] md:text-[9px] hover:bg-white/10 transition-all active:scale-95 btn-vibrant-glow">Show All Projects</button>
              </div>
           )}
         </div>
@@ -375,7 +392,7 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      <section id="stack" className="py-12 md:py-32 px-4 md:px-8 max-w-7xl mx-auto relative">
+      <section id="stack" ref={stackRef} className="py-12 md:py-32 px-4 md:px-8 max-w-7xl mx-auto relative">
         <div className="reveal text-center mb-12">
           <div className="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-4 font-bold uppercase tracking-[0.3em] text-[7px] md:text-[8px] text-indigo-400">Capabilities</div>
           <h2 className="text-3xl md:text-6xl font-black font-outfit text-white tracking-tighter">The Tech <span className="text-gradient">Stack</span></h2>
@@ -389,17 +406,23 @@ const App: React.FC = () => {
               <div key={category} className="reveal glass p-6 md:p-8 rounded-3xl border-white/5 hover:border-white/10 transition-all group" style={{ '--idx': idx } as any}>
                 <h4 className={`text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] mb-6 md:mb-8 ${accentColor}`}>{category}</h4>
                 <div className="space-y-4 md:space-y-6">
-                  {skills.map((skill: any) => (
+                  {skills.map((skill: any, sIdx: number) => (
                     <div key={skill.name} className="space-y-2">
                       <div className="flex justify-between items-end">
                         <span className="text-xs font-bold text-gray-200">{skill.name}</span>
                         <span className="text-[8px] md:text-[9px] font-black text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">{skill.level}%</span>
                       </div>
-                      <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                         <div 
-                          className={`h-full transition-all duration-1000 ease-out rounded-full opacity-60 group-hover:opacity-100 ${accentColor.replace('text', 'bg')}`}
-                          style={{ width: `${skill.level}%`, transitionDelay: `${idx * 100}ms` }}
-                        />
+                          className={`h-full transition-all duration-1000 ease-out rounded-full opacity-70 group-hover:opacity-100 ${accentColor.replace('text', 'bg')} relative`}
+                          style={{ 
+                            width: stackVisible ? `${skill.level}%` : '0%', 
+                            transitionDelay: `${(idx * 200) + (sIdx * 100) + 300}ms`,
+                            boxShadow: stackVisible ? `0 0 10px ${accentColor.replace('text-', '')}` : 'none'
+                          }}
+                        >
+                           <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -441,7 +464,7 @@ const App: React.FC = () => {
                         { name: 'Kaggle', url: 'https://kaggle.com/pankajkapri', icon: <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.825 23.859c-.022.028-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .199-.087.356-.261.471-.174.114-.348.172-.522.172h-3.12c-.174 0-.327-.058-.456-.172-.128-.115-.192-.272-.192-.471v-23.34c0-.199.064-.356.192-.471.129-.115.282-.172.456-.172h3.12c.174 0 .348.057.522.172.174.115.261.272.261.471v13.294l6.641-6.304c.106-.101.233-.152.381-.152h3.411c.16 0 .289.052.39.158.1.105.151.243.151.412 0 .15-.035.282-.104.396l-6.44 6.12 7.074 9.01c.106.136.16.276.16.421 0 .148-.045.293-.136.434z"/></svg>, hoverClass: 'hover:bg-cyan-500' }
                       ].map((s) => (
                         <Magnetic strength={0.3} key={s.name}>
-                          <a href={s.url} target="_blank" rel="noopener noreferrer" className={`w-9 h-9 md:w-10 md:h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:text-white ${s.hoverClass}`} aria-label={s.name}>
+                          <a href={s.url} target="_blank" rel="noopener noreferrer" className={`w-9 h-9 md:w-10 md:h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center transition-all duration-300 group hover:-translate-y-1.5 hover:shadow-2xl hover:text-white ${s.hoverClass}`} aria-label={s.name}>
                             <div className="transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6">{s.icon}</div>
                           </a>
                         </Magnetic>
@@ -452,7 +475,7 @@ const App: React.FC = () => {
              <div className="lg:w-[60%] flex flex-col justify-center">
                 {formStatus === 'success' ? (
                   <div className="h-full w-full flex flex-col items-center justify-center text-center p-8 bg-emerald-500/5 rounded-2xl border border-emerald-500/10 animate-in zoom-in duration-500">
-                    <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-emerald-500 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/20">
+                    <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-emerald-500 flex items-center justify-center mb-6 glow-emerald">
                       <svg className="w-7 h-7 md:w-8 md:h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
                     </div>
                     <h3 className="text-xl md:text-2xl font-black font-outfit text-white mb-2">Success</h3>
@@ -476,7 +499,7 @@ const App: React.FC = () => {
                        <textarea required name="message" placeholder="Describe your inquiry..." rows={4} className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 focus:border-indigo-500/50 outline-none text-white resize-none transition-all text-xs font-medium placeholder:text-gray-700"></textarea>
                     </div>
                     <div className="pt-2">
-                       <button type="submit" disabled={formStatus === 'submitting'} className={`w-full py-4 rounded-xl font-black text-[8px] md:text-[9px] uppercase tracking-[0.3em] transition-all duration-500 flex items-center justify-center gap-3 relative overflow-hidden ${formStatus === 'error' ? 'bg-rose-600' : 'bg-indigo-600 hover:bg-white hover:text-gray-950'}`}>
+                       <button type="submit" disabled={formStatus === 'submitting'} className={`w-full py-4 rounded-xl font-black text-[8px] md:text-[9px] uppercase tracking-[0.3em] transition-all duration-500 flex items-center justify-center gap-3 relative overflow-hidden btn-vibrant-glow ${formStatus === 'error' ? 'bg-rose-600' : 'bg-indigo-600 hover:bg-white hover:text-gray-950'}`}>
                          <span className="relative z-10 flex items-center gap-2">
                            {formStatus === 'submitting' ? (
                              <>

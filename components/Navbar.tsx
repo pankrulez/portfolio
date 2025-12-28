@@ -130,9 +130,9 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled }) => {
             <a 
               href="#contact"
               onClick={(e) => handleNavClick(e, 'contact')}
-              className={`relative overflow-hidden px-8 py-3.5 rounded-xl transition-all duration-500 active:scale-95 text-[9px] font-black uppercase tracking-[0.2em] ${
+              className={`relative overflow-hidden px-8 py-3.5 rounded-xl transition-all duration-500 active:scale-95 text-[9px] font-black uppercase tracking-[0.2em] btn-vibrant-glow ${
                 activeSection === 'contact' 
-                  ? 'bg-white text-gray-950 shadow-xl shadow-white/5' 
+                  ? 'bg-white text-gray-950' 
                   : 'bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-600 hover:text-white hover:border-transparent'
               }`}
             >
@@ -180,7 +180,7 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled }) => {
           <div className="pt-6 w-full max-w-xs">
             <a 
               href="#contact"
-              className="relative overflow-hidden w-full block text-center py-6 rounded-2xl bg-indigo-600 text-white font-black text-xl uppercase tracking-[0.2em] shadow-2xl active:scale-[0.95] transition-all"
+              className="relative overflow-hidden w-full block text-center py-6 rounded-2xl bg-indigo-600 text-white font-black text-xl uppercase tracking-[0.2em] shadow-2xl active:scale-[0.95] transition-all btn-vibrant-glow"
               onClick={(e) => handleNavClick(e, 'contact')}
             >
               Contact
